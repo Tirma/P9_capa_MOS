@@ -15,9 +15,9 @@ Lp(N, N) = 1;
 
 % Points interieurs du maillage
 for p=2:N-1
-    G = (Eps(p-1) + Eps(p))/((X(p+1)-X(p-1))*(X(p)-x(p-1)));
-    D = (Eps(p+1) + Eps(p))/((X(p+1)-X(p-1))*(X(p+1)-x(p)));
-    C = D - G;
+    G = (Eps(p-1) + Eps(p))/((X(p+1)-X(p-1))*(X(p)-X(p-1)));
+    D = (Eps(p+1) + Eps(p))/((X(p+1)-X(p-1))*(X(p+1)-X(p)));
+    C = - D - G;
     
     Lp(p,p-1) = G;
     Lp(p,p) = C;

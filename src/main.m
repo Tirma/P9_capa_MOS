@@ -1,6 +1,6 @@
-%% ---------------------------------------------------- %%
-%% ---------------- Code Capacit� MOS ----------------- %%
-%% ---------------------------------------------------- %%
+% ---------------------------------------------------- %
+% ---------------- Code Capacit� MOS ----------------- %
+% ---------------------------------------------------- %
 clc;close all;clear all;
 tic
 
@@ -49,7 +49,8 @@ Eps = Eps_mesh(EpsSi,EpsOx,tox,X,Nx);
 [m2fold,m4fold] = meff_mesh(mOx,ml,mt,tox,X,Nx);
 
 %Initialisation du profil de charge (optionel ?)
-%rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
+rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
+
 
 
 
@@ -70,7 +71,7 @@ Lp = Laplacien_Poisson(Eps,X);
 % ----- Boucle de convergence -------- %
 % ------------------------------------ %
 
-for iVg=1:length(Vg)
+%for iVg=1:length(Vg)
     Error = 1;
     while (Error > SetErr)
         
@@ -90,7 +91,7 @@ for iVg=1:length(Vg)
         %Condition aux limites pertinente ?
         
         % R�solution de Poisson
-        V_sol = %%%%---A COMPLETER---%%%% ;  %(((LpNR)^-1)*RHS_NR')' ;
+        V_sol = % ;  %(((LpNR)^-1)*RHS_NR')' ;
         
         % Ajout des points connus
         Vx = [Vg(iVg) V_sol' 0] ;
@@ -141,7 +142,7 @@ for iVg=1:length(Vg)
     end
     
     
-end
+%end
 
 
 % ---------------------------------------------- %
