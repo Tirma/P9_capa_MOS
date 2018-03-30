@@ -49,18 +49,32 @@ rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
 
 % Poisson
 Lp = Laplacien_Poisson(Eps,X);
+b = CL_class(Vg(21), rho_init, Nx);
 
 % Résolution
-Vx = Lp\rho_init;
+Vx = Lp\b';
+figure(1)
+plot(X,Vx,'b')
+title("V_0(x)")
 
 % Convergence
-for i=1:10
-    [n,p,rho] = charge_classique(Vx,tox,X,Nx)
-    Vx = Lp\rho;
+for i=1:2
+    [n,p,rho] = charge_classique(Vx,tox,X,Nx);
+    figure(2)
+    plot(X,rho,'r')
+    title("rho_{iter}(x)")
+    b = CL_class(Vg(21), rho, Nx);
+    Vx = Lp\b';
+    figure(3)
+    plot(X,Vx,'g')
+    title("V_{iter}(x)")
+    pause
+end
+
 
 % Affichage de l'inversion de charge en fonction de Vg
-figure(4)
-plot(X,Vx)
+% figure(4)
+% plot(X,Vx)
 
 %fin de la simulation
 toc
