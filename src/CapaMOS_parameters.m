@@ -27,4 +27,4 @@ end
 Cox = EpsOx/tox ;
 
 % Tension de seuil
-Vt = Vfb+2*PhyF+sqrt(2*q*Na*EpsSi*2*PhyF)/cox ;
+Vt = Vfb+2*PhyF+sqrt(2*q*Na*EpsSi*2*PhyF)/Cox ;
