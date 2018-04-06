@@ -49,8 +49,9 @@ rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
 
 % Poisson
 Lp = Laplacien_Poisson(Eps,X);          %On récupère la matrice Lp tq LpV=b
-b = CL_class(Vg(21), rho_init, Nx);     %b = rho et on ajoute les Cl à la matrice  => En 1  : Vg
-                                        %                                          => En Nx : 0
+b = CL_class(Vg(21), rho_init, Nx);     %b = rho et on ajoute les Cl à la matrice 
+                                        %   => 0 en Nx
+                                        %   => Vg en 1
                                                                                         
 % Résolution
 Vx = Lp\b';
@@ -60,12 +61,12 @@ title("V_0(x)")
 
 % Convergence
 for i=1:2
-    [n,p,rho] = charge_classique(Vx,tox,X,Nx);      %On récupère une valeure pour rho
+    [n,p,rho] = charge_classique(Vx,tox,X,Nx);
     figure(2)
     plot(X,rho,'r')
     title("rho_{iter}(x)")
-    b = CL_class(Vg(21), rho, Nx);                  %On génère le second membre
-    Vx = Lp\b';                                     %On fait un nouveau V
+    b = CL_class(Vg(21), rho, Nx);
+    Vx = Lp\b';
     figure(3)
     plot(X,Vx,'g')
     title("V_{iter}(x)")

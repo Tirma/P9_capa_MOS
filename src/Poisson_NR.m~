@@ -1,0 +1,10 @@
+function [LpNR,RHS_NR] = Poisson_NR(Lp,n,p,rho,Vprec)
+
+physical_constants
+Nx = size(Lp,1);
+
+%%%%---A COMPLETER---%%%%
+LpNR = Lp + spdiags(-q^2/kT.*(p+n), 0, Nx, Nx);
+RHS_NR = boundary_cond(RHS_NR,Eps,X,Vg);
+
+end
