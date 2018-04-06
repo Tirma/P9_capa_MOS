@@ -12,7 +12,7 @@ PhyF =Ef_Ei; %[eV]
 PhyS = KhiSi+Ef_Ec ; %[eV]
 
 % Tension de bande plate
- Vfb = PhyM-PhyS  ;  % Forcee a 0, mais normalement = PhyM-PhyS;
+Vfb = 0  ;  % Forcee a 0, mais normalement = PhyM-PhyS;
 
 % Couche de desertion maximale
 Wdep_max = sqrt(4*PhyF*EpsSi/(q*Na));

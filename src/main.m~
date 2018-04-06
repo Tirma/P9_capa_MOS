@@ -45,12 +45,12 @@ Eps = Eps_mesh(EpsSi,EpsOx,tox,X,Nx);
 % Initialisation de l'�nergie potentiel
 %Ep0 = En_Pot_Init(Eb,Nx,tox,X) ;
 
-% Maillage des masses effective (a faire pour partie 6)
-[m2fold,m4fold] = meff_mesh(mOx,ml,mt,tox,X,Nx);
+% % Maillage des masses effective (a faire pour partie 6)
+% [m2fold,m4fold] = meff_mesh(mOx,ml,mt,tox,X,Nx);
 
 %Initialisation du profil de charge (optionel ?)
 rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
-
+%plot(X,rho_init,'b')
 
 
 
@@ -61,8 +61,13 @@ rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
 % Poisson
 Lp = Laplacien_Poisson(Eps,X);
 
-% Schr�dinger
-[Ls2,Ls4] = Laplacien_Schrodinger(m2fold,m4fold,X) ;
+%Programme précédent
+b = CL_class(Vg(1), rho_init, Nx);
+Vx = Lp\b';
+
+
+% % Schr�dinger
+% [Ls2,Ls4] = Laplacien_Schrodinger(m2fold,m4fold,X) ;
 
 
 
@@ -71,33 +76,48 @@ Lp = Laplacien_Poisson(Eps,X);
 % ----- Boucle de convergence -------- %
 % ------------------------------------ %
 
+%Tracé
+ax1=subplot(2,2,1);
+title("V(x)")
+ax2=subplot(2,2,2);
+title("\rho(x)")
+ax3=subplot(2,2,3);
+title("n(x)")
+ax4=subplot(2,2,4);
+title("Qinv(x)")
+
 
 %for iVg=1:length(Vg)
-    iVg = 21;
+    iVg = 4;
     Error = 1;
- %   while (Error > SetErr)
+    while (Error > SetErr)
+
         
         % R�solution de l'�quation de Poisson  %
         % -------------------------------------%
         
         % Stockage du potentiel pr�c�dent
         Vprec = Vx ;
-        
+
         % Schema Newton_Raphson
         [LpNR,RHS_NR] = Poisson_NR(Lp,n,p,rho,Vprec);
         
         % Condition aux limites : tension de grille � gauches
-        RHS_NR = boundary_cond(RHS_NR,Eps,X,Vg(iVg));
+        RHS_NR = boundary_cond(RHS_NR, Eps, X, Vg(iVg));
         
         % Condition aux limites : tension de bulk � la masse
         %Condition aux limites pertinente ?
         
-        % R�solution de Poisson
-        V_sol = LpNR\RHS_NR'% ;  %(((LpNR)^-1)*RHS_NR')' ;
+        % Resolution de Poisson
+        Vx = LpNR\RHS_NR';% ;  %(((LpNR)^-1)*RHS_NR')' ;
         
         % Ajout des points connus
-        Vx = [Vg(iVg) V_sol' 0] ;
+        %Vx = [Vg(iVg) V_sol' 0] ;
+        figure(1);
+        hold on
+        pause(0.1)
         plot(X,Vx,'b')
+        title("V(x)")
         
         
         
@@ -107,6 +127,10 @@ Lp = Laplacien_Poisson(Eps,X);
         % Cas classique
         if(classique)
             [n,p,rho] = charge_classique(Vx,tox,X,Nx);
+            figure(2)
+            hold on
+            plot(X,rho,'b')
+            title("\rho(x)")
             
             
             % Cas quantique
@@ -121,7 +145,7 @@ Lp = Laplacien_Poisson(Eps,X);
         
         % Calcul de l'erreur de convegence et affichage de l'avancement
  %       clc
- %       Error = %%%%---A COMPLETER---%%%% % Affiche l'erreur
+        Error = mean((Vx-Vprec).^2); % Affiche l'erreur
  %       disp(Vg(iVg)) % Affiche la valeur de Vg en cours
         
         
@@ -134,15 +158,18 @@ Lp = Laplacien_Poisson(Eps,X);
         % rho(x)
         % Qinv(Vg)
         
-
         
         
         
         
-        
-        
-        
- %   end
+      
+    end
+    figure(1);
+    plot(X,Vx,'r','linewidth',2)
+    title("V(x)")
+    figure(2)
+    plot(X,rho,'r','linewidth',2)
+    title("rho(x)")
     
     
 %end
@@ -154,19 +181,19 @@ Lp = Laplacien_Poisson(Eps,X);
 
 
 
-% Calcul de la charge d'inversion theorique et affichage final
-%-------------------------------------------------------------
-
-% Charge d'inversion theorique
-Qinv_theo = %%%%---A COMPLETER---%%%%;
-
-% Affichage de l'inversion de charge en fonction de Vg
-figure(4)
-plot(Vg,Qinv,Vg,Qinv_theo)
-title('Qinv vs Vg');
-
-
-%fin de la simulation
+% % Calcul de la charge d'inversion theorique et affichage final
+% %-------------------------------------------------------------
+% 
+% % Charge d'inversion theorique
+% Qinv_theo = %%%%---A COMPLETER---%%%%;
+% 
+% % Affichage de l'inversion de charge en fonction de Vg
+% figure(4)
+% plot(Vg,Qinv,Vg,Qinv_theo)
+% title('Qinv vs Vg');
+% 
+% 
+% %fin de la simulation
 toc
 
 

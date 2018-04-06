@@ -50,7 +50,7 @@ Eps = Eps_mesh(EpsSi,EpsOx,tox,X,Nx);
 
 %Initialisation du profil de charge (optionel ?)
 rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
-
+%plot(X,rho_init,'b')
 
 
 
@@ -62,9 +62,8 @@ rho_init = charge_initialisation(X,Nx,Wdep_max,tox,Na);
 Lp = Laplacien_Poisson(Eps,X);
 
 %Programme précédent
-b = CL_class(Vg(21), rho_init, Nx);
+b = CL_class(Vg(1), rho_init, Nx);
 Vx = Lp\b';
-
 
 
 % % Schr�dinger
@@ -77,23 +76,27 @@ Vx = Lp\b';
 % ----- Boucle de convergence -------- %
 % ------------------------------------ %
 
+%Tracé
+ax1=subplot(2,2,1);
+title("V(x)")
+ax2=subplot(2,2,2);
+title("\rho(x)")
+ax3=subplot(2,2,3);
+title("n(x)")
+ax4=subplot(2,2,4);
+title("Qinv(x)")
 
-%for iVg=1:length(Vg)
-    iVg = 21;
+
+for iVg=1:length(Vg)
     Error = 1;
- %   while (Error > SetErr)
- for i=1:10
+    while (Error > SetErr)
+
         
         % R�solution de l'�quation de Poisson  %
         % -------------------------------------%
         
         % Stockage du potentiel pr�c�dent
         Vprec = Vx ;
-        figure();
-        plot(X,Vx,'b')
-        title("V_{ini}(x)")
-        
-        %[n,p,rho] = charge_classique(Vx,tox,X,Nx);
 
         % Schema Newton_Raphson
         [LpNR,RHS_NR] = Poisson_NR(Lp,n,p,rho,Vprec);
@@ -104,15 +107,11 @@ Vx = Lp\b';
         % Condition aux limites : tension de bulk � la masse
         %Condition aux limites pertinente ?
         
-        % R�solution de Poisson
+        % Resolution de Poisson
         Vx = LpNR\RHS_NR';% ;  %(((LpNR)^-1)*RHS_NR')' ;
         
         % Ajout des points connus
-        %Vx = [Vg(iVg) V_sol' 0] ;
-        figure(1);
-        plot(X,Vx,'b')
-        title("V_0(x)")
-        
+        %Vx = [Vg(iVg) V_sol' 0] ;        
         
         
         % Calcul des profils de charges et de la charge d'inversion %
@@ -120,11 +119,7 @@ Vx = Lp\b';
         
         % Cas classique
         if(classique)
-            [n,p,rho] = charge_classique(Vx,tox,X,Nx);
-            figure(2)
-            plot(X,rho,'r')
-            title("rho_{iter}(x)")
-            
+            [n,p,rho] = charge_classique(Vx,tox,X,Nx);            
             
             % Cas quantique
         else
@@ -138,7 +133,7 @@ Vx = Lp\b';
         
         % Calcul de l'erreur de convegence et affichage de l'avancement
  %       clc
- %       Error = %%%%---A COMPLETER---%%%% % Affiche l'erreur
+        Error = mean((Vx-Vprec).^2); % Affiche l'erreur
  %       disp(Vg(iVg)) % Affiche la valeur de Vg en cours
         
         
@@ -151,18 +146,31 @@ Vx = Lp\b';
         % rho(x)
         % Qinv(Vg)
         
-
-        pause
         
         
         
         
-        
- end        
- %   end
+      
+    end
+    hold(ax1,'on')
+    plot(ax1,X,Vx)
+    hold(ax1,'off')
     
+    hold(ax2,'on')
+    plot(ax2,X,rho)
+    hold(ax2,'off')
     
-%end
+    hold(ax3,'on')
+    plot(ax3,X,n)
+    hold(ax3,'off')
+    
+%     hold(ax4,'on')
+%     plot(ax4,X,zeros(Nx))
+%     hold(ax4,'off')
+    
+    pause(0.5)
+    
+end
 
 
 % ---------------------------------------------- %
